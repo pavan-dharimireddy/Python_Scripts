@@ -1,0 +1,99 @@
+Line-by-line explanation of FileManagement.py
+
+Line 1: import os
+Imports the standard 'os' module, which provides functions for interacting with the operating system (e.g., checking file paths, listing directories).
+
+Line 2: import shutil
+Imports the 'shutil' module, which offers high-level file operations, specifically used here for moving files.
+
+Line 4: def organize_directory(path='.'):
+Defines the function 'organize_directory'. It accepts one argument 'path', which defaults to the current directory ('.') if not provided.
+
+Line 5-7: """ ... """
+A docstring describing the purpose of the function.
+
+Line 9-16: extensions_map = { ... }
+Defines a dictionary mapping folder names (keys like 'Images') to lists of file extensions (values like ['.jpg', '.png']). This determines where files will be moved.
+
+Line 19: if not os.path.exists(path):
+Checks if the directory path provided by the user actually exists.
+
+Line 20: print(f"The directory '{path}' does not exist.")
+Prints an error message to the console if the path is invalid.
+
+Line 21: return
+Exits the function immediately if the path does not exist.
+
+Line 24: files = os.listdir(path)
+Retrieves a list of all entries (files and folders) in the specified directory.
+
+Line 26: for file in files:
+Starts a loop to iterate through every item found in the directory.
+
+Line 27: file_path = os.path.join(path, file)
+Constructs the full absolute or relative path to the current item by joining the directory path and the filename.
+
+Line 30: if os.path.isdir(file_path) or file == os.path.basename(__file__):
+Checks two conditions to skip processing:
+1. If the item is a directory (we only want to move files).
+2. If the item is the script itself (to prevent the script from moving itself).
+
+Line 31: continue
+Skips the rest of the loop for this iteration and moves to the next file.
+
+Line 34: _, ext = os.path.splitext(file)
+Splits the filename into the root name and the extension. The '_' variable ignores the name, and 'ext' stores the extension (e.g., '.jpg').
+
+Line 35: ext = ext.lower()
+Converts the extension to lowercase to ensure case-insensitive matching (e.g., treating '.JPG' the same as '.jpg').
+
+Line 38: if not ext:
+Checks if the file has no extension (e.g., a file named just 'README').
+
+Line 39: continue
+Skips files that do not have an extension.
+
+Line 42: target_folder = 'Others'
+Sets a default destination folder name 'Others' in case the file's extension isn't found in the map.
+
+Line 43: for category, extensions in extensions_map.items():
+Iterates through the 'extensions_map' dictionary to check if the current file's extension belongs to a known category.
+
+Line 44: if ext in extensions:
+Checks if the current file's extension exists in the list of extensions for the current category.
+
+Line 45: target_folder = category
+If a match is found, updates 'target_folder' to the specific category name (e.g., 'Images').
+
+Line 46: break
+Exits the inner loop immediately since the correct category has been found.
+
+Line 49: target_path = os.path.join(path, target_folder)
+Constructs the full path for the destination folder.
+
+Line 50: if not os.path.exists(target_path):
+Checks if the destination folder already exists.
+
+Line 51: os.makedirs(target_path)
+Creates the destination folder (and any missing parent directories) if it doesn't exist.
+
+Line 54: try:
+Begins a 'try' block to handle potential errors that might occur during the file move operation.
+
+Line 55: shutil.move(file_path, os.path.join(target_path, file))
+Moves the file from its current location to the new destination folder.
+
+Line 56: print(f"Moved: {file} -> {target_folder}/")
+Prints a confirmation message indicating where the file was moved.
+
+Line 57: except Exception as e:
+Catches any exceptions (errors) that occur inside the 'try' block.
+
+Line 58: print(f"Error moving {file}: {e}")
+Prints the error message if the move operation fails.
+
+Line 60: if __name__ == "__main__":
+Standard Python boilerplate. Checks if the script is being run directly (as opposed to being imported as a module).
+
+Line 62: organize_directory()
+Calls the 'organize_directory' function to execute the logic when the script is run.
